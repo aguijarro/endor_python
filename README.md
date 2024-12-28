@@ -42,3 +42,18 @@ git checkout develop
 git merge --no-ff feature/MLO-1
 git branch -d feature/MLO-1
 git push origin develop
+
+### Docker
+docker-compose -f docker-compose.dev.yml up -d --build
+docker-compose -f docker-compose.dev.yml down
+docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans
+docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans --rmi all
+docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans --rmi all --force-rm
+docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans --rmi all --force-rm --timeout 0
+docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans --rmi all --force-rm --timeout 0 --remove-orphans
+
+cd endor_python
+docker-compose -f infrastructure/docker/development/docker-compose.dev.yml up -d --build
+
+docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans
+docker-compose -f docker-compose.dev.yml up -d --build
