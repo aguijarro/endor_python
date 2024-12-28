@@ -31,9 +31,14 @@ pip install -r base.txt
 ```bash
 pip install -r requirements/base.txt
 uvicorn app.main:app --reload
+uvicorn app.main:app --port 8001
 ```
 
 ### Installation
 
 git checkout -b develop main
 git checkout -b feature/MLO-1 develop
+git checkout develop
+git merge --no-ff feature/MLO-1
+git branch -d feature/MLO-1
+git push origin develop
