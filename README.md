@@ -16,6 +16,11 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
+### Install dependencies
+
+```bash
+pip install -r base.txt
+```
 
 ### Installation
 
@@ -29,3 +34,6 @@ uvicorn app.main:app --reload
 ```
 
 ### Installation
+
+git checkout -b develop main
+git checkout -b feature/MLO-1 develop
