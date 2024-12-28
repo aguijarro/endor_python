@@ -74,3 +74,9 @@ docker-compose -f docker-compose.dev.yml exec endor_python_db psql -U postgres
 
 postgres=# \c endor_python_dev
 postgres=# \q
+
+
+# Tests
+docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans
+docker-compose -f docker-compose.dev.yml up -d --build
+docker-compose -f docker-compose.dev.yml exec -u appuser endor_python_dev python -m pytest -v
