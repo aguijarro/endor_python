@@ -1,7 +1,24 @@
 version: '3.8'
 
 services:
-  endor_python:
+
+  # new
+  endor_python_db:
+    build:
+      context: ../../../
+      dockerfile: infrastructure/docker/development/infrastructure/db/Dockerfile
+    container_name: endor_python_db
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - endor_python_network
+
+  endor_python_dev:
     build:
       context: ../../../
       dockerfile: infrastructure/docker/development/app/Dockerfile
@@ -14,10 +31,7 @@ services:
     ports:
       - "8005:8000"
     volumes:
-      - type: bind
-        source: ${PWD}/../../../app
-        target: /usr/endor_python/app
-        read_only: true
+      - ../../../app:/usr/endor_python/app:ro
     networks:
       - endor_python_network
     healthcheck:
@@ -31,7 +45,12 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    depends_on:
+      - endor_python_db        
 
 networks:
   endor_python_network:
     driver: bridge
+
+volumes:
+  postgres_data:
