@@ -48,9 +48,16 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy application code
+# Copy application code and test files
 COPY --chown=appuser:appuser app app/
+COPY --chown=appuser:appuser tests tests/
+COPY --chown=appuser:appuser pyproject.toml ./
 COPY --chown=appuser:appuser infrastructure/docker/development/.env.development app/.env
+
+# Create pytest cache directory with correct permissions
+RUN mkdir -p /tmp/.pytest_cache && \
+    chown -R appuser:appuser /tmp/.pytest_cache && \
+    chmod 777 /tmp/.pytest_cache
 
 USER appuser
 
