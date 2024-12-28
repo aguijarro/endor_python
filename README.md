@@ -59,3 +59,18 @@ docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans
 docker-compose -f docker-compose.dev.yml up -d --build
 
 docker-compose -f docker-compose.dev.yml logs -f app
+
+
+# Clean up everything
+docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans
+docker system prune -f
+docker volume prune -f
+
+# Rebuild
+docker-compose -f docker-compose.dev.yml up -d --build
+
+# Database
+docker-compose -f docker-compose.dev.yml exec endor_python_db psql -U postgres
+
+postgres=# \c endor_python_dev
+postgres=# \q

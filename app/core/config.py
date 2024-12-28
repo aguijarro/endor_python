@@ -3,6 +3,7 @@ import logging
 
 from functools import lru_cache
 from typing import List
+from pydantic import AnyUrl
 from pydantic_settings import BaseSettings
 
 log = logging.getLogger("uvicorn")
@@ -11,7 +12,7 @@ log = logging.getLogger("uvicorn")
 class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI App"
     DEBUG: bool = False
-    DATABASE_URL: str = "sqlite:///./dev.db"
+    DATABASE_URL: AnyUrl = None
     ALLOWED_ORIGINS: str = "http://localhost:3000"
     ENVIRONMENT: str = "development"
     
