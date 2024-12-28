@@ -57,3 +57,5 @@ docker-compose -f infrastructure/docker/development/docker-compose.dev.yml up -d
 
 docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans
 docker-compose -f docker-compose.dev.yml up -d --build
+
+docker-compose -f docker-compose.dev.yml logs -f app
