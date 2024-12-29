@@ -111,3 +111,26 @@ docker-compose -f docker-compose.dev.yml exec endor_python_db psql -U postgres
 \d test_table
 SELECT * FROM test_table;
 \q
+
+Test EndPoints
+
+# Start the services
+docker-compose -f infrastructure/docker/development/docker-compose.dev.yml up -d
+
+# Test the health endpoint
+curl http://localhost:8005/api/v1/health/health
+
+# Create a test record
+curl -X POST "http://localhost:8005/api/v1/test/?name=test1"
+
+# Get all test records
+curl http://localhost:8005/api/v1/test/
+
+
+### Test inserting data
+
+docker-compose -f infrastructure/docker/development/docker-compose.dev.yml exec -u appuser endor_python_dev alembic upgrade head
+
+docker-compose -f infrastructure/docker/development/docker-compose.dev.yml restart endor_python_dev
+
+curl -X POST "http://localhost:8005/api/v1/test/?name=test1"
