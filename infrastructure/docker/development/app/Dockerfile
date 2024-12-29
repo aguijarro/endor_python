@@ -32,7 +32,8 @@ LABEL description="FastAPI development environment"
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PATH="/opt/venv/bin:$PATH"
+    PATH="/opt/venv/bin:$PATH" \
+    PYTHONPATH="/usr/endor_python"
 
 # Create non-root user
 RUN adduser --disabled-password --gecos '' appuser

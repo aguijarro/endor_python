@@ -31,7 +31,8 @@ services:
     ports:
       - "8005:8000"
     volumes:
-      - ../../../app:/usr/endor_python/app:ro
+      - ../../../app:/usr/endor_python/app:rw
+      - ../../../alembic.ini:/usr/endor_python/alembic.ini:rw
     networks:
       - endor_python_network
     healthcheck:

@@ -58,7 +58,7 @@ docker-compose -f infrastructure/docker/development/docker-compose.dev.yml up -d
 docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans
 docker-compose -f docker-compose.dev.yml up -d --build
 
-docker-compose -f docker-compose.dev.yml logs -f app
+docker-compose -f docker-compose.dev.yml logs -f endor_python_dev
 
 
 # Clean up everything
@@ -80,3 +80,57 @@ postgres=# \q
 docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans
 docker-compose -f docker-compose.dev.yml up -d --build
 docker-compose -f docker-compose.dev.yml exec -u appuser endor_python_dev python -m pytest -v
+
+# Database Migrations
+# Create a new migration
+docker-compose -f docker-compose.dev.yml exec -u appuser endor_python_dev alembic init app/migrations
+
+docker-compose -f docker-compose.dev.yml exec -u appuser endor_python_dev alembic revision --autogenerate -m "create test table"
+
+# Apply migrations
+docker-compose -f docker-compose.dev.yml exec -u appuser endor_python_dev alembic upgrade head
+
+# Rollback one migration
+docker-compose -f docker-compose.dev.yml exec -u appuser endor_python_dev alembic downgrade -1
+
+# Rebuild containers
+docker-compose -f docker-compose.dev.yml down --volumes --remove-orphans
+docker-compose -f docker-compose.dev.yml up -d --build
+
+# Generate migration
+docker-compose -f docker-compose.dev.yml exec -u appuser endor_python_dev alembic revision --autogenerate -m "create test table"
+
+# Apply migration
+docker-compose -f docker-compose.dev.yml exec -u appuser endor_python_dev alembic upgrade head
+
+
+# Validate migrations
+docker-compose -f docker-compose.dev.yml exec endor_python_db psql -U postgres
+\c endor_python_dev
+\dt
+\d test_table
+SELECT * FROM test_table;
+\q
+
+Test EndPoints
+
+# Start the services
+docker-compose -f infrastructure/docker/development/docker-compose.dev.yml up -d
+
+# Test the health endpoint
+curl http://localhost:8005/api/v1/health/health
+
+# Create a test record
+curl -X POST "http://localhost:8005/api/v1/test/?name=test1"
+
+# Get all test records
+curl http://localhost:8005/api/v1/test/
+
+
+### Test inserting data
+
+docker-compose -f infrastructure/docker/development/docker-compose.dev.yml exec -u appuser endor_python_dev alembic upgrade head
+
+docker-compose -f infrastructure/docker/development/docker-compose.dev.yml restart endor_python_dev
+
+curl -X POST "http://localhost:8005/api/v1/test/?name=test1"
